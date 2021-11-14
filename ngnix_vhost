@@ -1,0 +1,31 @@
+# "./tools/vagrant/ngnix_vhost"
+
+# develop
+server {
+    listen 8080;
+    listen [::]:8080 ipv6only=on;
+    server_name localhost;
+
+    root /var/www;
+    index index.html index.php;
+
+    # Important for VirtualBox
+    sendfile off;
+
+    # Gzip Settings
+    gzip on;
+    gzip_disable "msie6";
+
+    location / {
+        try_files $uri $uri/ =404;
+        autoindex on;
+    }
+    # enable php
+    location ~ \.php$ {
+      fastcgi_split_path_info ^(.+\.php)(/.+)$;
+      fastcgi_pass unix:/var/run/php5-fpm.sock;
+      fastcgi_index index.php;
+      include fastcgi_params;
+    }
+}
+
